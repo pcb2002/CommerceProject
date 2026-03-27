@@ -1,5 +1,7 @@
 package step3;
 
+import java.text.DecimalFormat;
+
 public class Product {
     private String productName;
     private int price;
@@ -27,5 +29,11 @@ public class Product {
 
     public int getInventoryQuantity() {
         return inventoryQuantity;
+    }
+
+    public void printProduct() {
+        DecimalFormat df = new DecimalFormat("#,###");
+        System.out.printf("선택한 상품: %s | %s원 | %s | 재고: %d개\n\n",
+                getProductName(), df.format(getPrice()), getProductDescription(), getInventoryQuantity());
     }
 }
