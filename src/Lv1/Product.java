@@ -8,6 +8,7 @@ public class Product {
     private String productDescription;
     private int inventoryQuantity;
 
+    // 상픔 등록 생성자
     public Product(String productName, int price, String productDescription, int inventoryQuantity) {
         this.productName = productName;
         this.price = price;
@@ -35,5 +36,11 @@ public class Product {
         DecimalFormat df = new DecimalFormat("#,###");
         System.out.printf("선택한 상품: %s | %s원 | %s | 재고: %d개\n\n",
                 getProductName(), df.format(getPrice()), getProductDescription(), getInventoryQuantity());
+    }
+
+    public void printChoicedProduct() {
+        DecimalFormat df = new DecimalFormat("#,###");
+        System.out.printf("'%s | %s원 | %s\n'",
+                getProductName(), df.format(getPrice()), getProductDescription());
     }
 }

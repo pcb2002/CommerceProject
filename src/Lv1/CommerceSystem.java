@@ -6,10 +6,13 @@ import java.util.Scanner;
 
 public class CommerceSystem {
     private Scanner sc;
+    private OrderSystem orderSystem;
     private List<Category> category;
 
-    public CommerceSystem(Scanner sc, List<Category> category) {
+
+    public CommerceSystem(Scanner sc, OrderSystem orderSystem, List<Category> category) {
         this.sc = sc;
+        this.orderSystem = orderSystem;
         this.category = category;
     }
 
@@ -29,6 +32,7 @@ public class CommerceSystem {
                 // 2. 정상 범위의 상품 선택 (1 ~ 상품 개수)
                 if (categoryOption > 0 && categoryOption <= size) {
                     category.get(categoryNum).printProducts(categoryOption - 1);
+                    orderSystem.saveProduct(categoryNum, categoryOption - 1);
                     break;
                     // 상품 상세 정보를 본 후 다시 목록을 보여줄지,
                     // 아니면 여기서 break해서 뒤로 갈지 결정
@@ -73,11 +77,22 @@ public class CommerceSystem {
                     category.get(2).printCategory();
                     getProductOption(2);
                 }
+                case 4 -> orderSystem.printBasketList();
+                case 5 -> orderSystem.cancleOrder();
                 case 0 -> System.out.println("커머스 플랫폼을 종료합니다.");
             }
             if (mainOption == 0) {
                 break;
             }
+            System.out.println("0. 종료           | 프로그램 종료\n");
+
+            //if (orderSystem)
+            // 바구니가 비어있으면 아래 옵션 수행 안함
+            System.out.println("[ 주문 관리 ]");
+            System.out.println("4. 장바구니 확인  | 장바구니를 확인 후 주문합니다.");
+            System.out.println("5. 주문 취소  | 진헹중인 주문을 취소합니다.");
+
+
         }
     }
 }

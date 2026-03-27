@@ -1,5 +1,6 @@
 package Lv1;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -22,11 +23,21 @@ public class Main {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
+
+
         Category electronicsCategory = new Category("전자제품", electronicList);
         Category clothingCategory = new Category("의류", clothingList);
         Category foodCategory = new Category("식품", foodList);
-        CommerceSystem commerceSystem = new CommerceSystem(sc, List.of(electronicsCategory, clothingCategory, foodCategory));
+
+        List<ShoppingBasket> shoppingBasket = new ArrayList<>();
+
+        OrderSystem orderSystem = new OrderSystem(sc, shoppingBasket,
+                List.of(electronicsCategory, clothingCategory, foodCategory));
+        CommerceSystem commerceSystem = new CommerceSystem(sc, orderSystem,
+                List.of(electronicsCategory, clothingCategory, foodCategory));
         commerceSystem.start();
+
+
 
     }
 }
