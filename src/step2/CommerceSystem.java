@@ -27,9 +27,11 @@ public class CommerceSystem {
 
         System.out.println("0. 종료           | 프로그램 종료");
 
-        int end = sc.nextInt();
-        if (end == 0){
+        int mainOption = sc.nextInt();
+        if (mainOption == 0){
             System.out.println("커머스 플랫폼을 종료합니다.");
+        } else {
+            System.out.println("기능 준비중...");    // 예외 처리
         }
     }
 }
