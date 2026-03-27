@@ -10,7 +10,8 @@
     - [ ]  설명 : 고객 정보를 관리하는 클래스입니다.
     - [ ]  클래스는 `고객명`, `이메일`, `등급` 필드를 갖습니다.
 - 구조 예시
-- public static void main(String[] args) {
+```java
+public static void main(String[] args) {
   // CommerceSystem 객체 생성 및 초기화
 
         // CommerceSystem 내 시작하는 함수 호출
@@ -43,8 +44,10 @@ public class Customer {
 
         // 구조에 맞게 메소드 선언 
 }
+```
 
 STEP 3를 구현하면 터미널에 이렇게 보여집니다.
+```java
 [ 실시간 커머스 플랫폼 메인 ]
 1. 전자제품
 2. 의류
@@ -68,3 +71,4 @@ STEP 3를 구현하면 터미널에 이렇게 보여집니다.
 0. 종료      | 프로그램 종료
    0 <- // 0을 입력
    커머스 플랫폼을 종료합니다.
+```
