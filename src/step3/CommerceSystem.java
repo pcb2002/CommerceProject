@@ -9,17 +9,9 @@ public class CommerceSystem {
 
     public CommerceSystem(Scanner sc) {
         this.sc = sc;
-        this.category = initCategories();
-    }
-
-
-
-
-    private List<Category> initCategories() {
-        return List.of(
-                new Category("전자제품"),
-                new Category("의류"),
-                new Category("식품")
+        this.category = List.of(Category.createElectronicsCategory(),
+                Category.createClothingCategory(),
+                Category.createFoodCategory()
         );
     }
 
