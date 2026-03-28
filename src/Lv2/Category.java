@@ -54,4 +54,13 @@ public class Category {
         }
         System.out.println("0. 뒤로가기");
     }
+
+    public void addProduct(Product newProduct) {
+    }
+
+
+    public void removeProduct(int productIdx) {
+    }
+
+
 }
