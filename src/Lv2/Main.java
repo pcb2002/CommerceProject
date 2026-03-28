@@ -32,8 +32,10 @@ public class Main {
         List<ShoppingBasket> shoppingBasket = new ArrayList<>();
         List<ConfirmedOrder> confirmedOrder = new ArrayList<>();
 
-        OrderSystem orderSystem = new OrderSystem(sc, shoppingBasket, categories, confirmedOrder);
-        CommerceSystem commerceSystem = new CommerceSystem(sc, orderSystem, categories);
+        ProductManagementSystem pms = new ProductManagementSystem(categories);
+        AdminSystem adminSystem = new AdminSystem(sc, pms);
+        OrderSystem orderSystem = new OrderSystem(shoppingBasket, confirmedOrder);
+        CommerceSystem commerceSystem = new CommerceSystem(sc, orderSystem, pms, adminSystem);
 
         commerceSystem.start();
     }

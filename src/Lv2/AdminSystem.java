@@ -4,35 +4,60 @@ import java.util.Scanner;
 
 public class AdminSystem {
     private Scanner sc;
+    private ProductManagementSystem pms;
 
-    public AdminSystem(Scanner sc) {
+    public AdminSystem(Scanner sc, ProductManagementSystem pms) {
         this.sc = sc;
+        this.pms = pms;
     }
 
-    // 관리자 메뉴 루프
-    public void startAdminMode(ProductManagementSystem pms) {
-        System.out.println("\n🛠️ 관리자 모드에 접속했습니다.");
-        System.out.println("1. 상품 등록  2. 상품 수정  3. 상품 삭제  0. 나가기");
-        int choice = sc.nextInt();
+    public boolean correctPassword(String pw) {
+        return pw.equals("admin123");
+    }
 
-        switch (choice) {
-            case 1 -> addProductProcess(pms);
-            case 2 -> updateProductProcess(pms);
-            case 3 -> deleteProductProcess(pms);
+    private void addProductList(int Option) {
+        String categoryName = pms.getCategories().get(Option).getCategoryName();
+        System.out.println("[ " + categoryName + " 카테고리에 상품 추가 ]");
+        System.out.println("상품명을 입력해주세요: ");
+        String newName = sc.nextLine();
+        System.out.println("가격을 입력해주세요: ");
+        int newPrice = sc.nextInt();
+        System.out.println("상품 설명을 입력해주세요: ");
+        String newDescription = sc.nextLine();
+        System.out.println("재고수량을 입력해주세요: ");
+        int newQuantity = sc.nextInt();
+        Product newProduct = new Product(newName, newPrice, newDescription, newQuantity);
+
+        newProduct.printProduct();
+        System.out.println("위 정보로 상품을 추가하시겠습니까?");
+        System.out.println("1. 확인      2. 취소");
+
+        int saveNewOption = sc.nextInt();
+        if (saveNewOption == 1) {
+            pms.addProduct(Option, newProduct);
         }
     }
+
     // 상품 등록 프로세스
-    private void addProductProcess(ProductManagementSystem pms) {
-        System.out.println("등록할 카테고리 번호를 선택하세요...");
-        // 1. 여기서 Scanner로 이름, 가격 등을 입력받습니다.
-        // 2. 입력받은 정보로 new Product(...) 객체를 만듭니다.
-        // 3. pms.addProduct(categoryIdx, newProduct)를 호출하여 저장합니다!
-    }
-    private void deleteProductProcess(ProductManagementSystem pms) {
+    public void addProductProcess() {
+        System.out.println("\n어느 카테고리에 상품을 추가하시겠습니까?");
+        for (int i = 0; i < pms.getCategories().size(); i++) {
+            Category c = pms.getCategories().get(i);
+            // %-12s: 왼쪽 정렬 (공백 확보), %,d: 천 단위 콤마
+            System.out.println((i + 1) + ". " + c.getCategoryName());
+        }
+        int addOption = sc.nextInt();
+        addProductList(addOption);
     }
 
-    private void updateProductProcess(ProductManagementSystem pms) {
+    public void updateProductProcess() {
+
     }
 
+    public void deleteProductProcess() {
 
+    }
+
+    public void showAllProduct() {
+    }
 }

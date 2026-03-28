@@ -12,6 +12,10 @@ public class Category {
         this.products = products;
     }
 
+    public List<Product> getProducts() {
+        return products;
+    }
+
     public Product getProduct(int i) {
         // 인덱스가 리스트 범위를 벗어나지 않는지 확인 (방어적 코드)
         if (i >= 0 && i < products.size()) {
@@ -33,11 +37,12 @@ public class Category {
 
     // 등록된 상품 중 하나 출력하기
     public void printProducts(int i) {
+        System.out.print("선택된 상품: ");
         products.get(i).printProduct();
     }
 
     public void printChoicedProducts(int i) {
-        products.get(i).printChoicedProduct();
+        products.get(i).printChoiceProduct();
     }
 
     // 카테고리 출력
@@ -54,13 +59,5 @@ public class Category {
         }
         System.out.println("0. 뒤로가기");
     }
-
-    public void addProduct(Product newProduct) {
-    }
-
-
-    public void removeProduct(int productIdx) {
-    }
-
 
 }

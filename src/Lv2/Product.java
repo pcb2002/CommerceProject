@@ -34,11 +34,11 @@ public class Product {
 
     public void printProduct() {
         DecimalFormat df = new DecimalFormat("#,###");
-        System.out.printf("선택한 상품: %s | %s원 | %s | 재고: %d개\n\n",
+        System.out.printf("%s | %s원 | %s | 재고: %d개\n\n",
                 getProductName(), df.format(getPrice()), getProductDescription(), getInventoryQuantity());
     }
 
-    public void printChoicedProduct() {
+    public void printChoiceProduct() {
         DecimalFormat df = new DecimalFormat("#,###");
         System.out.printf("'%s | %s원 | %s\n'",
                 getProductName(), df.format(getPrice()), getProductDescription());

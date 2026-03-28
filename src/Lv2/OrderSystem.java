@@ -2,19 +2,13 @@ package Lv2;
 
 import java.text.DecimalFormat;
 import java.util.List;
-import java.util.Scanner;
 
 public class OrderSystem {
-    private Scanner sc;
     private List<ShoppingBasket> basketList;
-    private List<Category> category;
     private List<ConfirmedOrder> confirmedOrder;
 
-    public OrderSystem(Scanner sc, List<ShoppingBasket> basketList,
-                       List<Category> category, List<ConfirmedOrder> confirmedOrder) {
-        this.sc = sc;
+    public OrderSystem(List<ShoppingBasket> basketList, List<ConfirmedOrder> confirmedOrder) {
         this.basketList = basketList;
-        this.category = category;
         this.confirmedOrder = confirmedOrder;
     }
 
@@ -26,30 +20,10 @@ public class OrderSystem {
         return confirmedOrder.isEmpty();
     }
 
-    public void saveProduct(int i, int categoryNum) {
-        // 1. 카테고리에서 상품 객체를 먼저 꺼냅니다.
-        Category selectedCategory = category.get(i);
-        Product selectedProduct = selectedCategory.getProduct(categoryNum);
-
-        if (selectedProduct == null) return;
-
-        selectedCategory.printChoicedProducts(categoryNum);
-        System.out.println("위 상품을 장바구니에 추가하시겠습니까?");
-        System.out.println("1. 확인      2. 취소");
-
-        int saveOption = sc.nextInt();
-        if (saveOption == 1) {
-            // 여기서 수량을 물어볼 수도 있습니다. (예: 1개)
-            int quantity = 1;
-
-            // 2. ShoppingBasket 타입의 객체를 생성합니다.
-            ShoppingBasket item = new ShoppingBasket(selectedProduct, quantity);
-
-            // 3. 이제 타입이 일치하는 리스트에 추가합니다!
-            basketList.add(item);
-
-            System.out.println(selectedProduct.getProductName() + "이(가) 장바구니에 담겼습니다.\n");
-        }
+    // 장바구니에 상품 추가
+    public void saveProduct(Product selectedProduct, int quantity) {
+        ShoppingBasket item = new ShoppingBasket(selectedProduct, quantity);
+        basketList.add(item);
     }
 
     public void printBasketList() {
@@ -81,16 +55,14 @@ public class OrderSystem {
         System.out.println(df.format(totalPrice()) + "원\n");
     }
 
-    public void confirmOrder() {
+    public void confirmOrder(int Option) {
         printBasketList();
         System.out.println("\n[ 총 주문 금액 ]");
         printTotalPrice();
         System.out.println("1. 주문 확정      2. 메인으로 돌아가기");
 
-        int confirmOption = sc.nextInt();
-
         // 주문확정 시 반복
-        if (confirmOption == 1) {
+        if (Option == 1) {
             ConfirmedOrder confirmedOrders = new ConfirmedOrder(basketList);
             confirmedOrder.add(confirmedOrders);
 
@@ -109,7 +81,7 @@ public class OrderSystem {
         }
     }
 
-    public void cancleOrder() {
+    public void cancelOrder(int Option) {
         System.out.println("[ 최근 주문 내역 ]");
         // 1. 먼저 어떤 주문들이 있는지 보여줍니다.
         for (int i = 0; i < confirmedOrder.size(); i++) {
@@ -122,9 +94,7 @@ public class OrderSystem {
         System.out.println("\n주문을 취소하시겠습니까?");
         System.out.println("1. 주문 취소      2. 메인으로 돌아가기");
 
-        int cancleOption = sc.nextInt();
-
-        if (cancleOption == 1) {
+        if (Option == 1) {
             // 1. 주문서(ConfirmedOrder)를 한 장씩 꺼냄
             for (ConfirmedOrder order : confirmedOrder) {
                 // 2. 그 주문서 안에 적힌 상품 리스트를 가져와서 하나씩 꺼냄
