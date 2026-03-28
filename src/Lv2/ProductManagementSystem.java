@@ -21,6 +21,18 @@ public class ProductManagementSystem {
         categories.get(categoryIdx).getProducts().add(newProduct);
     }
 
+    // 관라지용: 상품 수정
+    public void updateProductPrice(Product p, int price) {
+        p.setPrice(price);
+    }
+
+    public void updateProductDescription(Product p, String description) {
+        p.setProductDescription(description);
+    }
+
+    public void updateInventoryQuantity(Product p, int quantity) {
+        p.setInventoryQuantity(quantity);
+    }
     // 관리자용: 상품 삭제
     public void deleteProduct(int categoryIdx, int productIdx) {
         categories.get(categoryIdx).getProducts().remove(productIdx);

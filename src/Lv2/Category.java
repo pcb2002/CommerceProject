@@ -44,20 +44,4 @@ public class Category {
     public void printChoicedProducts(int i) {
         products.get(i).printChoiceProduct();
     }
-
-    // 카테고리 출력
-    public void printCategory() {
-        System.out.println("[ " + categoryName + " 카테고리]");
-        // 금액 콤마 포맷팅
-        DecimalFormat df = new DecimalFormat("#,###");
-
-        for (int i = 0; i < products.size(); i++) {
-            Product p = products.get(i);
-            // %-12s: 왼쪽 정렬 (공백 확보), %,d: 천 단위 콤마
-            System.out.printf("%d. %-13s | %s원 | %s%n",
-                    i + 1, p.getProductName(), df.format(p.getPrice()), p.getProductDescription());
-        }
-        System.out.println("0. 뒤로가기");
-    }
-
 }

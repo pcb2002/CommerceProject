@@ -32,9 +32,21 @@ public class Product {
         return inventoryQuantity;
     }
 
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public void setProductDescription(String productDescription) {
+        this.productDescription = productDescription;
+    }
+
+    public void setInventoryQuantity(int inventoryQuantity) {
+        this.inventoryQuantity = inventoryQuantity;
+    }
+
     public void printProduct() {
         DecimalFormat df = new DecimalFormat("#,###");
-        System.out.printf("%s | %s원 | %s | 재고: %d개\n\n",
+        System.out.printf("%s | %s원 | %s | 재고: %d개\n",
                 getProductName(), df.format(getPrice()), getProductDescription(), getInventoryQuantity());
     }
 

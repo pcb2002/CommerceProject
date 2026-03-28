@@ -1,5 +1,6 @@
 package Lv2;
 
+import java.text.DecimalFormat;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -19,6 +20,21 @@ public class CommerceSystem {
         this.adminSystem = adminSystem;
     }
 
+    public void printCategory(int idx) {
+        Category c = pms.getCategories().get(idx);
+        System.out.println("[ " + c.getCategoryName() + " 카테고리]");
+        // 금액 콤마 포맷팅
+        DecimalFormat df = new DecimalFormat("#,###");
+
+        for (int i = 0; i < c.getProducts().size(); i++) {
+            Product p = c.getProducts().get(i);
+            // %-12s: 왼쪽 정렬 (공백 확보), %,d: 천 단위 콤마
+            System.out.printf("%d. %-13s | %s원 | %s%n",
+                    i + 1, p.getProductName(), df.format(p.getPrice()), p.getProductDescription());
+        }
+        System.out.println("0. 뒤로가기");
+    }
+
     private void saveProductOption(int i, int categoryNum) {
         // 1. 카테고리에서 상품 객체를 먼저 꺼냅니다.
         Category selectedCategory = pms.getCategories().get(i);
@@ -31,6 +47,8 @@ public class CommerceSystem {
         System.out.println("1. 확인      2. 취소");
 
         int saveOption = sc.nextInt();
+        sc.nextLine();
+
         if (saveOption == 1) {
             // 여기서 수량을 물어볼 수도 있습니다. (예: 1개)
             int quantity = 1;
@@ -116,24 +134,26 @@ public class CommerceSystem {
             }
 
             int mainOption = sc.nextInt();
+            sc.nextLine();
 
             switch(mainOption) {
                 case 1 -> {
-                    pms.getCategories().get(0).printCategory();
+                    printCategory(0);
                     getProductOption(0);
                 }
                 case 2 -> {
-                    pms.getCategories().get(1).printCategory();
+                    printCategory(1);
                     getProductOption(1);
                 }
                 case 3 -> {
-                    pms.getCategories().get(2).printCategory();
+                    printCategory(2);
                     getProductOption(2);
                 }
                 case 4 -> {
                     if (orderSystem.isBasketEmpty())
                         System.out.println("장바구니가 비어있어 접근할 수 없습니다.");
                     else {
+                        orderSystem.printConfirmOrder();
                         int confirmOption = sc.nextInt();
                         orderSystem.confirmOrder(confirmOption);
                     }
@@ -142,6 +162,7 @@ public class CommerceSystem {
                     if (orderSystem.isOrderEmpty())
                         System.out.println("취소할 주문이 없습니다.");
                     else {
+                        orderSystem.printCancelOrder();
                         int cancelOption = sc.nextInt();
                         orderSystem.cancelOrder(cancelOption);
                     }

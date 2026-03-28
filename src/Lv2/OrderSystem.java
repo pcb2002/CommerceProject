@@ -27,7 +27,6 @@ public class OrderSystem {
     }
 
     public void printBasketList() {
-        System.out.println("[ 장바구니 내역 ]");
         // 금액 콤마 포맷팅
         DecimalFormat df = new DecimalFormat("#,###");
 
@@ -55,12 +54,15 @@ public class OrderSystem {
         System.out.println(df.format(totalPrice()) + "원\n");
     }
 
-    public void confirmOrder(int Option) {
+    public void printConfirmOrder() {
+        System.out.println("[ 장바구니 내역 ]");
         printBasketList();
         System.out.println("\n[ 총 주문 금액 ]");
         printTotalPrice();
         System.out.println("1. 주문 확정      2. 메인으로 돌아가기");
+    }
 
+    public void confirmOrder(int Option) {
         // 주문확정 시 반복
         if (Option == 1) {
             ConfirmedOrder confirmedOrders = new ConfirmedOrder(basketList);
@@ -81,7 +83,7 @@ public class OrderSystem {
         }
     }
 
-    public void cancelOrder(int Option) {
+    public void printCancelOrder() {
         System.out.println("[ 최근 주문 내역 ]");
         // 1. 먼저 어떤 주문들이 있는지 보여줍니다.
         for (int i = 0; i < confirmedOrder.size(); i++) {
@@ -93,7 +95,9 @@ public class OrderSystem {
         }
         System.out.println("\n주문을 취소하시겠습니까?");
         System.out.println("1. 주문 취소      2. 메인으로 돌아가기");
+    }
 
+    public void cancelOrder(int Option) {
         if (Option == 1) {
             // 1. 주문서(ConfirmedOrder)를 한 장씩 꺼냄
             for (ConfirmedOrder order : confirmedOrder) {
