@@ -62,6 +62,12 @@ public class CommerceSystem {
 
             System.out.println("0. 종료           | 프로그램 종료");
 
+            if (!orderSystem.isBasketEmpty() || !orderSystem.isOrderEmpty()) {
+                System.out.println("\n[ 주문 관리 ]");
+                System.out.println("4. 장바구니 확인  | 장바구니를 확인 후 주문합니다.");
+                System.out.println("5. 주문 취소  | 진헹중인 주문을 취소합니다.");
+            }
+
             int mainOption = sc.nextInt();
 
             switch(mainOption) {
@@ -77,22 +83,21 @@ public class CommerceSystem {
                     category.get(2).printCategory();
                     getProductOption(2);
                 }
-                case 4 -> orderSystem.printBasketList();
-                case 5 -> orderSystem.cancleOrder();
+                case 4 -> {
+                    if (orderSystem.isBasketEmpty())
+                        System.out.println("장바구니가 비어있어 접근할 수 없습니다.");
+                    else orderSystem.confirmOrder();
+                }
+                case 5 -> {
+                    if (orderSystem.isOrderEmpty())
+                        System.out.println("취소할 주문이 없습니다.");
+                    else orderSystem.cancleOrder();
+                }
                 case 0 -> System.out.println("커머스 플랫폼을 종료합니다.");
             }
             if (mainOption == 0) {
                 break;
             }
-            System.out.println("0. 종료           | 프로그램 종료\n");
-
-            //if (orderSystem)
-            // 바구니가 비어있으면 아래 옵션 수행 안함
-            System.out.println("[ 주문 관리 ]");
-            System.out.println("4. 장바구니 확인  | 장바구니를 확인 후 주문합니다.");
-            System.out.println("5. 주문 취소  | 진헹중인 주문을 취소합니다.");
-
-
         }
     }
 }

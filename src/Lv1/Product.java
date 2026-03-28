@@ -43,4 +43,12 @@ public class Product {
         System.out.printf("'%s | %s원 | %s\n'",
                 getProductName(), df.format(getPrice()), getProductDescription());
     }
+
+    public void deductInventoryQuantity(int i) {
+        this.inventoryQuantity -= i;
+    }
+
+    public void addInventoryQuantity(int i) {
+        this.inventoryQuantity += i;
+    }
 }
