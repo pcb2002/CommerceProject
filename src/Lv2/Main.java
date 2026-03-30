@@ -43,10 +43,11 @@ public class Main {
         CategoryController categoryController = new CategoryController(categories);
         AdminSystem adminSystem = new AdminSystem(sc, categoryController);
         OrderSystem orderSystem = new OrderSystem(cartItems, orderHistory);
+        CommerceSystem commerceSystem = new CommerceSystem(sc, categoryController);
 
-        CommerceSystem commerceSystem = new CommerceSystem(sc, orderSystem, categoryController, adminSystem);
+        MainController mainController = new MainController(sc, commerceSystem, orderSystem, adminSystem, categoryController);
 
         // 5. 프로그램 시작
-        commerceSystem.start();
+        mainController.start();
     }
 }

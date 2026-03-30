@@ -17,8 +17,4 @@ public class OrderRecord {
     public List<CartItem> getOrderItems() {
         return orderItems;
     }
-
-    public CartItem getOrderedItem(int index) {
-        return orderItems.get(index);
-    }
 }

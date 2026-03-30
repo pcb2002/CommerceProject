@@ -50,12 +50,6 @@ public class Product {
                 getProductName(), df.format(getPrice()), getProductDescription(), getInventoryQuantity());
     }
 
-    public void printChoiceProduct() {
-        DecimalFormat df = new DecimalFormat("#,###");
-        System.out.printf("'%s | %s원 | %s\n'",
-                getProductName(), df.format(getPrice()), getProductDescription());
-    }
-
     public void deductInventoryQuantity(int i) {
         this.inventoryQuantity -= i;
     }

@@ -85,7 +85,7 @@ public class OrderSystem {
         if (isOrderHistoryEmpty()) return "취소할 주문이 없습니다.";
 
         StringBuilder result = new StringBuilder();
-        result.append("🗑️ 주문이 취소되어 재고가 복구되었습니다.\n");
+        result.append("주문이 취소되어 재고가 복구되었습니다.\n");
 
         for (OrderRecord order : orderHistory) {
             List<CartItem> items = order.getOrderItems();

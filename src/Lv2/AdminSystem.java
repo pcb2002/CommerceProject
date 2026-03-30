@@ -17,6 +17,27 @@ public class AdminSystem {
         return pw.equals("admin123");
     }
 
+    public void showAdminMenu() {
+        while (true) {
+            System.out.println("\n[ 관리자 모드 ]");
+            System.out.println("1. 상품 등록 \n2. 상품 수정\n3. 상품 삭제\n4. 전체 상품 현황\n0. 메인으로 돌아가기");
+            System.out.print("메뉴 선택: ");
+
+            int adminOption = sc.nextInt();
+            sc.nextLine();
+
+            if (adminOption == 0) break;
+
+            switch (adminOption) {
+                case 1 -> addProductProcess();
+                case 2 -> updateProductProcess();
+                case 3 -> deleteProductProcess();
+                case 4 -> showAllProduct();
+                default -> System.out.println("잘못된 번호입니다.");
+            }
+        }
+    }
+
     public String getCategoryDetails(int idx) {
         Category c = categoryController.getCategories().get(idx);
         StringBuilder sb = new StringBuilder();
