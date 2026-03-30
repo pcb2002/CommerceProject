@@ -7,89 +7,158 @@ import java.util.Scanner;
 public class CommerceSystem {
     private Scanner sc;
     private OrderSystem orderSystem;
-    private ProductManagementSystem pms;
+    private CategoryController categoryController; // PMS 대신 CategoryController
     private AdminSystem adminSystem;
 
-    private boolean isAdminLocked = false; // 관리자 모드 잠금 상태 (기본값 false)
+    private boolean isAdminLocked = false;
 
     public CommerceSystem(Scanner sc, OrderSystem orderSystem,
-                          ProductManagementSystem pms, AdminSystem adminSystem) {
+                          CategoryController categoryController, AdminSystem adminSystem) {
         this.sc = sc;
         this.orderSystem = orderSystem;
-        this.pms = pms;
+        this.categoryController = categoryController;
         this.adminSystem = adminSystem;
     }
 
-    public void printCategory(int idx) {
-        Category c = pms.getCategories().get(idx);
-        System.out.println("[ " + c.getCategoryName() + " 카테고리]");
-        // 금액 콤마 포맷팅
-        DecimalFormat df = new DecimalFormat("#,###");
+    public void start() {
+        while (true) {
+            printMainMenu();
+            try {
+                int mainOption = sc.nextInt();
+                sc.nextLine();
 
-        for (int i = 0; i < c.getProducts().size(); i++) {
-            Product p = c.getProducts().get(i);
-            // %-12s: 왼쪽 정렬 (공백 확보), %,d: 천 단위 콤마
+                int categoryCount = categoryController.getCategories().size();
+
+                if (mainOption > 0 && mainOption <= categoryCount) {
+                    handleShopping(mainOption - 1);
+                }
+                else if (mainOption == 4) handleOrderProcess();
+                else if (mainOption == 5) handleCancelProcess();
+                else if (mainOption == 6) handleAdminLogin();
+                else if (mainOption == 0) {
+                    System.out.println("커머스 플랫폼을 종료합니다.");
+                    break;
+                }
+                else {
+                    System.out.println("잘못된 번호입니다.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("숫자로만 입력해주세요.");
+                sc.nextLine();
+            }
+        }
+    }
+
+    private void printMainMenu() {
+        System.out.println("\n[ 실시간 커머스 플랫폼 메인 ]");
+
+        for (int i = 0; i < categoryController.getCategories().size(); i++) {
+            System.out.println((i + 1) + ". " + categoryController.getCategories().get(i).getCategoryName());
+        }
+
+        System.out.println("0. 종료           | 프로그램 종료");
+        System.out.println("6. 관리자 모드");
+
+        if (!orderSystem.isCartEmpty() || !orderSystem.isOrderHistoryEmpty()) {
+            System.out.println("\n[ 주문 관리 ]");
+            System.out.println("4. 장바구니 확인  | 장바구니를 확인 후 주문합니다.");
+            System.out.println("5. 주문 취소      | 진행중인 주문을 취소합니다.");
+        }
+        System.out.print("메뉴 선택: ");
+    }
+
+    private void handleShopping(int categoryIdx) {
+        Category category = categoryController.getCategories().get(categoryIdx);
+        System.out.println("\n[ " + category.getCategoryName() + " 카테고리 ]");
+
+        DecimalFormat df = new DecimalFormat("#,###");
+        for (int i = 0; i < category.getProducts().size(); i++) {
+            Product p = category.getProducts().get(i);
             System.out.printf("%d. %-13s | %s원 | %s%n",
                     i + 1, p.getProductName(), df.format(p.getPrice()), p.getProductDescription());
         }
         System.out.println("0. 뒤로가기");
-    }
+        System.out.print("상품 선택: ");
 
-    private void saveProductOption(int i, int categoryNum) {
-        // 1. 카테고리에서 상품 객체를 먼저 꺼냅니다.
-        Category selectedCategory = pms.getCategories().get(i);
-        Product selectedProduct = selectedCategory.getProduct(categoryNum);
-
-        if (selectedProduct == null) return;
-
-        selectedCategory.printChoicedProducts(categoryNum);
-        System.out.println("위 상품을 장바구니에 추가하시겠습니까?");
-        System.out.println("1. 확인      2. 취소");
-
-        int saveOption = sc.nextInt();
+        int productOption = sc.nextInt();
         sc.nextLine();
 
-        if (saveOption == 1) {
-            // 여기서 수량을 물어볼 수도 있습니다. (예: 1개)
-            int quantity = 1;
+        if (productOption == 0) return;
 
-            // 타입이 일치하는 리스트에 추가
-            orderSystem.saveProduct(selectedProduct, quantity);
+        if (productOption > 0 && productOption <= category.getProductSize()) {
+            Product selectedProduct = category.getProduct(productOption - 1);
+            System.out.println("\n[" + selectedProduct.getProductName() + "]을(를) 장바구니에 추가하시겠습니까?");
+            System.out.println("1. 확인      2. 취소");
 
-            System.out.println(selectedProduct.getProductName() + "이(가) 장바구니에 담겼습니다.\n");
+            if (sc.nextInt() == 1) {
+                orderSystem.addToCart(selectedProduct, 1);
+                System.out.println(selectedProduct.getProductName() + "이(가) 장바구니에 담겼습니다.");
+            }
+            sc.nextLine();
+        } else {
+            System.out.println("잘못된 상품 번호입니다.");
         }
     }
 
-    private void getProductOption(int categoryNum) {
-        while (true) {
-            try {
-                int categoryOption = sc.nextInt();
+    private void handleOrderProcess() {
+        if (orderSystem.isCartEmpty()) {
+            System.out.println("장바구니가 비어있어 접근할 수 없습니다.");
+            return;
+        }
 
-                // 1. 뒤로가기 (0번)
-                if (categoryOption == 0) {
-                    break;
+        System.out.println("\n[ 장바구니 내역 ]");
+        System.out.print(orderSystem.getCartDetails());
+        System.out.println("\n[ 총 주문 금액 ] : " + orderSystem.calculateTotalPrice() + "원");
+        System.out.println("1. 주문 확정      2. 메인으로 돌아가기");
+
+        if (sc.nextInt() == 1) {
+            String result = orderSystem.processOrder();
+            System.out.println(result);
+        }
+        sc.nextLine();
+    }
+
+    private void handleCancelProcess() {
+        if (orderSystem.isOrderHistoryEmpty()) {
+            System.out.println("취소할 주문이 없습니다.");
+            return;
+        }
+
+        System.out.println("\n[ 최근 주문 내역 ]");
+        System.out.print(orderSystem.getOrderHistoryDetails());
+        System.out.println("\n주문을 취소하시겠습니까?");
+        System.out.println("1. 주문 취소      2. 메인으로 돌아가기");
+
+        if (sc.nextInt() == 1) {
+            String result = orderSystem.cancelAllOrders();
+            System.out.println(result);
+        }
+        sc.nextLine();
+    }
+
+    private void handleAdminLogin() {
+        if (isAdminLocked) {
+            System.out.println("관리자 모드가 영구적으로 잠겼습니다. 고객센터에 문의하세요.");
+            return;
+        }
+
+        int count = 1;
+        while (count <= 3) {
+            System.out.print("\n관리자 비밀번호를 입력해주세요: ");
+            String pw = sc.next();
+            sc.nextLine();
+
+            if (adminSystem.correctPassword(pw)) {
+                System.out.println("관리자 인증에 성공했습니다.");
+                showAdminMenu();
+                return;
+            } else {
+                System.out.println("비밀번호가 틀렸습니다. (현재 " + count + "회 틀림 / 최대 3회)");
+                if (count == 3) {
+                    isAdminLocked = true;
+                    System.out.println("비밀번호 3회 오류로 관리자 모드가 차단되었습니다.");
                 }
-
-                // 선택된 카테고리 내부 상품의 개수
-                int size = pms.getCategories().get(categoryNum).getProductSize();
-
-                // 2. 정상 범위의 상품 선택 (1 ~ 상품 개수)
-                if (categoryOption > 0 && categoryOption <= size) {
-                    pms.getCategories().get(categoryNum).printProducts(categoryOption - 1);
-                    saveProductOption(categoryNum, categoryOption - 1);
-                    break;
-                    // 상품 상세 정보를 본 후 다시 목록을 보여줄지,
-                    // 아니면 여기서 break해서 뒤로 갈지 결정
-                } else {
-                    // 3. 범위를 벗어난 숫자 입력
-                    System.out.println("잘못된 번호입니다. 1번부터 "
-                            + (size + 1) + "번 사이의 숫자를 입력해주세요.");
-                }
-
-            } catch (InputMismatchException e) {
-                // 4. 문자가 입력되었을 때 예외 처리
-                System.out.println("숫자로만 입력해주세요");
-                sc.nextLine(); // 중요! 잘못 입력된 문자열을 비워줘야 무한 루프에 빠지지 않습니다.
+                count++;
             }
         }
     }
@@ -98,9 +167,10 @@ public class CommerceSystem {
         while (true) {
             System.out.println("\n[ 관리자 모드 ]");
             System.out.println("1. 상품 등록 \n2. 상품 수정\n3. 상품 삭제\n4. 전체 상품 현황\n0. 메인으로 돌아가기");
+            System.out.print("메뉴 선택: ");
 
             int adminOption = sc.nextInt();
-            sc.nextLine(); // 버퍼 비우기
+            sc.nextLine();
 
             if (adminOption == 0) break;
 
@@ -110,95 +180,6 @@ public class CommerceSystem {
                 case 3 -> adminSystem.deleteProductProcess();
                 case 4 -> adminSystem.showAllProduct();
                 default -> System.out.println("잘못된 번호입니다.");
-            }
-        }
-    }
-
-    public void start() {
-        while(true){
-            System.out.println("[ 실시간 커머스 플랫폼 메인 ]");
-
-            for (int i = 0; i < pms.getCategories().size(); i++) {
-                Category c = pms.getCategories().get(i);
-                // %-12s: 왼쪽 정렬 (공백 확보), %,d: 천 단위 콤마
-                System.out.println((i + 1) + ". " + c.getCategoryName());
-            }
-
-            System.out.println("0. 종료           | 프로그램 종료");
-            System.out.println("6. 관리자 모드");
-
-            if (!orderSystem.isBasketEmpty() || !orderSystem.isOrderEmpty()) {
-                System.out.println("\n[ 주문 관리 ]");
-                System.out.println("4. 장바구니 확인  | 장바구니를 확인 후 주문합니다.");
-                System.out.println("5. 주문 취소  | 진헹중인 주문을 취소합니다.");
-            }
-
-            int mainOption = sc.nextInt();
-            sc.nextLine();
-
-            switch(mainOption) {
-                case 1 -> {
-                    printCategory(0);
-                    getProductOption(0);
-                }
-                case 2 -> {
-                    printCategory(1);
-                    getProductOption(1);
-                }
-                case 3 -> {
-                    printCategory(2);
-                    getProductOption(2);
-                }
-                case 4 -> {
-                    if (orderSystem.isBasketEmpty())
-                        System.out.println("장바구니가 비어있어 접근할 수 없습니다.");
-                    else {
-                        orderSystem.printConfirmOrder();
-                        int confirmOption = sc.nextInt();
-                        orderSystem.confirmOrder(confirmOption);
-                    }
-                }
-                case 5 -> {
-                    if (orderSystem.isOrderEmpty())
-                        System.out.println("취소할 주문이 없습니다.");
-                    else {
-                        orderSystem.printCancelOrder();
-                        int cancelOption = sc.nextInt();
-                        orderSystem.cancelOrder(cancelOption);
-                    }
-                }
-                case 6 -> {
-                    // 1. 이미 잠겨있는지 먼저 확인
-                    if (isAdminLocked) {
-                        System.out.println("관리자 모드가 영구적으로 잠겼습니다. 고객센터에 문의하세요.");
-                        break;
-                    }
-
-                    int count = 1;
-
-                    while (count <= 3) {
-                        System.out.print("관리자 비밀번호를 입력해주세요: ");
-                        String pw = sc.next(); // nextLine() 대신 next() 권장 (공백 전까지 입력)
-
-                        if (adminSystem.correctPassword(pw)) {
-                            System.out.println("관리자 인증에 성공했습니다.");
-                            showAdminMenu(); // 관리자 메뉴 진입
-                            break;
-                        } else {
-                            System.out.println("비밀번호가 틀렸습니다. (현재 " + count + "회 틀림 / 최대 3회)");
-                            if (count == 3) {
-                                isAdminLocked = true; // 3회 실패 시 잠금 설정
-                                System.out.println("비밀번호 3회 오류로 관리자 모드가 차단되었습니다.");
-                            }
-                            count++;
-                        }
-                    }
-                }
-                case 0 -> System.out.println("커머스 플랫폼을 종료합니다.");
-                default -> System.out.println("잘못된 번호입니다.");
-            }
-            if (mainOption == 0) {
-                break;
             }
         }
     }

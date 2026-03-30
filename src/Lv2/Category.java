@@ -1,47 +1,40 @@
 package Lv2;
 
-import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Category {
     private String categoryName;
     private List<Product> products;
 
-    public Category(String  categoryName, List<Product> products) {
+    public Category(String categoryName, List<Product> products) {
         this.categoryName = categoryName;
-        this.products = products;
-    }
-
-    public List<Product> getProducts() {
-        return products;
-    }
-
-    public Product getProduct(int i) {
-        // 인덱스가 리스트 범위를 벗어나지 않는지 확인 (방어적 코드)
-        if (i >= 0 && i < products.size()) {
-            return products.get(i);
-        }
-
-        System.out.println("해당 인덱스에 상품이 존재하지 않습니다.");
-        return null;
+        // 핵심 방어 로직:
+        // 외부에서 List.of() 같은 불변 리스트를 넘기더라도,
+        // 내부에서는 관리자 모드에서 상품 추가/삭제가 가능하도록 가변 리스트로 복사하여 저장
+        this.products = new ArrayList<>(products);
     }
 
     public String getCategoryName() {
         return categoryName;
     }
 
-    // 등록된 상품의 수 가져오기
+    public List<Product> getProducts() {
+        return products;
+    }
+
     public int getProductSize() {
         return products.size();
     }
 
-    // 등록된 상품 중 하나 출력하기
-    public void printProducts(int i) {
-        System.out.print("선택된 상품: ");
-        products.get(i).printProduct();
-    }
+    public Product getProduct(int index) {
+        // 인덱스가 리스트 범위를 벗어나지 않는지 확인 (방어적 코드)
+        if (index >= 0 && index < products.size()) {
+            return products.get(index);
+        }
 
-    public void printChoicedProducts(int i) {
-        products.get(i).printChoiceProduct();
+        // 여기서 System.out.println()을 쓰지 않고 null만 리턴하여,
+        // 에러 메시지 출력의 책임도 컨트롤러(Commerce/Admin)에게 넘김
+        return null;
     }
 }

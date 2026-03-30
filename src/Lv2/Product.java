@@ -36,7 +36,7 @@ public class Product {
         this.price = price;
     }
 
-    public void setProductDescription(String productDescription) {
+    public void setDescription(String productDescription) {
         this.productDescription = productDescription;
     }
 
