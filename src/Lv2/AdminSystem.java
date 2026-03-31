@@ -1,16 +1,23 @@
 package Lv2;
 
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.Scanner;
 
 public class AdminSystem {
     private Scanner sc;
-    private CategoryController categoryController; // 이름 변경 반영
+    private DataBase db;
+    private List<Category> category;
     private DecimalFormat df = new DecimalFormat("#,###");
 
-    public AdminSystem(Scanner sc, CategoryController categoryController) {
+    public List<Category> categories() {
+        this.category = db.getCategories();
+        return category;
+    }
+
+    public AdminSystem(Scanner sc, DataBase db) {
         this.sc = sc;
-        this.categoryController = categoryController;
+        this.db = db;
     }
 
     public boolean correctPassword(String pw) {
@@ -38,13 +45,14 @@ public class AdminSystem {
         }
     }
 
-    public String getCategoryDetails(int idx) {
-        Category c = categoryController.getCategories().get(idx);
+    public String getCategoryDetails(int categoryIdx) {
+        Category selectedCategory = categories().get(categoryIdx);
+        List<Product> selectedProductList = selectedCategory.getProducts();
         StringBuilder sb = new StringBuilder();
 
-        sb.append("[ ").append(c.getCategoryName()).append(" 카테고리 ]\n");
-        for (int i = 0; i < c.getProducts().size(); i++) {
-            Product p = c.getProduct(i);
+        sb.append("[ ").append(selectedCategory.getCategoryName()).append(" 카테고리 ]\n");
+        for (int i = 0; i < selectedCategory.getProducts().size(); i++) {
+            Product p = selectedProductList.get(i);
             sb.append(String.format("%d. %-13s | %s원 | %s | 재고: %d개\n",
                     i + 1, p.getProductName(), df.format(p.getPrice()),
                     p.getProductDescription(), p.getInventoryQuantity()));
@@ -54,21 +62,21 @@ public class AdminSystem {
 
     public void showAllProduct() {
         System.out.println("\n[ 전체 상품 현황 ]");
-        for (int i = 0; i < categoryController.getCategories().size(); i++) {
+        for (int i = 0; i < categories().size(); i++) {
             System.out.print(getCategoryDetails(i));
         }
     }
 
     public void addProductProcess() {
         System.out.println("\n[ 상품 등록 ]\n어느 카테고리에 상품을 추가하시겠습니까?");
-        for (int i = 0; i < categoryController.getCategories().size(); i++) {
-            System.out.println((i + 1) + ". " + categoryController.getCategories().get(i).getCategoryName());
+        for (int i = 0; i < categories().size(); i++) {
+            System.out.println((i + 1) + ". " + categories().get(i).getCategoryName());
         }
         System.out.print("선택: ");
         int categoryIdx = sc.nextInt() - 1;
         sc.nextLine();
 
-        if (categoryIdx >= 0 && categoryIdx < categoryController.getCategories().size()) {
+        if (categoryIdx >= 0 && categoryIdx < categories().size()) {
             executeAddProduct(categoryIdx);
         } else {
             System.out.println("잘못된 카테고리 번호입니다.");
@@ -76,7 +84,7 @@ public class AdminSystem {
     }
 
     private void executeAddProduct(int categoryIdx) {
-        Category c = categoryController.getCategories().get(categoryIdx);
+        Category c = categories().get(categoryIdx);
         System.out.println("\n[ " + c.getCategoryName() + " 카테고리에 상품 추가 ]");
 
         String newName = getValidNewProductName(c);
@@ -100,7 +108,7 @@ public class AdminSystem {
         System.out.println("1. 확인      2. 취소");
 
         if (sc.nextInt() == 1) {
-            categoryController.addProduct(categoryIdx, newProduct);
+            db.addProductToCategory(categoryIdx, newProduct);
             System.out.println("상품이 성공적으로 추가되었습니다!");
         } else {
             System.out.println("상품 추가가 취소되었습니다.");
@@ -135,7 +143,7 @@ public class AdminSystem {
         String targetName = sc.nextLine();
         Product targetProduct = null;
 
-        for (Category c : categoryController.getCategories()) {
+        for (Category c : categories()) {
             for (Product p : c.getProducts()) {
                 if (targetName.equals(p.getProductName())) {
                     targetProduct = p;
@@ -196,14 +204,14 @@ public class AdminSystem {
 
     public void deleteProductProcess() {
         System.out.println("\n[ 상품 삭제 ]\n어느 카테고리의 상품을 삭제하시겠습니까?");
-        for (int i = 0; i < categoryController.getCategories().size(); i++) {
-            System.out.println((i + 1) + ". " + categoryController.getCategories().get(i).getCategoryName());
+        for (int i = 0; i < categories().size(); i++) {
+            System.out.println((i + 1) + ". " + categories().get(i).getCategoryName());
         }
         System.out.print("선택: ");
         int categoryIdx = sc.nextInt() - 1;
         sc.nextLine();
 
-        if (categoryIdx >= 0 && categoryIdx < categoryController.getCategories().size()) {
+        if (categoryIdx >= 0 && categoryIdx < categories().size()) {
             executeDeleteProduct(categoryIdx);
         } else {
             System.out.println("잘못된 카테고리 번호입니다.");
@@ -211,7 +219,7 @@ public class AdminSystem {
     }
 
     private void executeDeleteProduct(int categoryIdx) {
-        Category c = categoryController.getCategories().get(categoryIdx);
+        Category c = categories().get(categoryIdx);
         System.out.print(getCategoryDetails(categoryIdx));
 
         System.out.print("\n삭제할 상품 번호를 선택하세요: ");
@@ -219,9 +227,9 @@ public class AdminSystem {
         sc.nextLine();
 
         if (productIdx >= 0 && productIdx < c.getProductSize()) {
-            Product p = c.getProduct(productIdx);
+            Product p = c.getProducts().get(productIdx);
             System.out.printf("%s이(가) 삭제되었습니다.\n", p.getProductName());
-            categoryController.deleteProduct(categoryIdx, productIdx);
+            db.deleteProductFromCategory(categoryIdx, productIdx);
         } else {
             System.out.println("잘못된 상품 번호입니다.");
         }

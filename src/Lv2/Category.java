@@ -7,6 +7,8 @@ public class Category {
     private String categoryName;
     private List<Product> products;
 
+    private Product selectedProduct;
+
     public Category(String categoryName, List<Product> products) {
         this.categoryName = categoryName;
         // 핵심 방어 로직:
@@ -27,10 +29,11 @@ public class Category {
         return products.size();
     }
 
-    public Product getProduct(int index) {
+    public Product selectedProduct(int index) {
         // 인덱스가 리스트 범위를 벗어나지 않는지 확인 (방어적 코드)
         if (index >= 0 && index < products.size()) {
-            return products.get(index);
+            this.selectedProduct =  products.get(index);
+            return selectedProduct;
         }
 
         // 여기서 System.out.println()을 쓰지 않고 null만 리턴하여,

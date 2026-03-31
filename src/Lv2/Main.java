@@ -37,17 +37,15 @@ public class Main {
 
         // 3. 주문 및 장바구니 리스트 생성
         List<CartItem> cartItems = new ArrayList<>();
-        List<OrderRecord> orderHistory = new ArrayList<>();
+        List<OrderItem> orderItems = new ArrayList<>();
 
         // 4. 시스템 객체 생성 및 의존성 주입 (Dependency Injection)
-        CategoryController categoryController = new CategoryController(categories);
-        AdminSystem adminSystem = new AdminSystem(sc, categoryController);
-        OrderSystem orderSystem = new OrderSystem(cartItems, orderHistory);
-        CommerceSystem commerceSystem = new CommerceSystem(sc, categoryController);
-
-        MainController mainController = new MainController(sc, commerceSystem, orderSystem, adminSystem, categoryController);
+        DataBase dataBase = new DataBase(categories, cartItems, orderItems);
+        OrderSystem orderSystem = new OrderSystem(sc, dataBase);
+        AdminSystem adminSystem = new AdminSystem(sc, dataBase);
+        CommerceSystem commerceSystem = new CommerceSystem(sc, dataBase, orderSystem, adminSystem);
 
         // 5. 프로그램 시작
-        mainController.start();
+        commerceSystem.start();
     }
 }
