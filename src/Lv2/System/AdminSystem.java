@@ -14,6 +14,8 @@ public class AdminSystem {
     private List<Category> category;
     private DecimalFormat df = new DecimalFormat("#,###");
 
+    boolean isAdminLocked = false;
+
     public List<Category> categories() {
         this.category = db.getCategories();
         return category;
@@ -24,7 +26,7 @@ public class AdminSystem {
         this.db = db;
     }
 
-    public void handleAdminLogin(boolean isAdminLocked) {
+    public void handleAdminLogin() {
         if (isAdminLocked) {
             System.out.println("관리자 모드가 영구적으로 잠겼습니다. 고객센터에 문의하세요.");
             return;

@@ -16,12 +16,12 @@ public class Main {
         List<OrderItem> orderItems = new ArrayList<>();
 
         // 시스템 객체 생성 및 의존성 주입 (Dependency Injection)
-        DB DB = new DB(cartItems, orderItems);
-        CategorySystem categorySystem = new CategorySystem(sc, DB);
+        DB db = new DB(cartItems, orderItems);
+        CategorySystem categorySystem = new CategorySystem(sc, db);
         ProductSystem productSystem = new ProductSystem(sc);
-        CartSystem cartSystem = new CartSystem(DB);
-        OrderSystem orderSystem = new OrderSystem(sc, DB);
-        AdminSystem adminSystem = new AdminSystem(sc, DB);
+        CartSystem cartSystem = new CartSystem(db);
+        OrderSystem orderSystem = new OrderSystem(sc, db);
+        AdminSystem adminSystem = new AdminSystem(sc, db);
         CommerceSystem commerceSystem = new CommerceSystem(sc, categorySystem, productSystem,cartSystem, orderSystem, adminSystem);
 
         // 프로그램 시작

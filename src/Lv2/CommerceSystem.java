@@ -15,9 +15,7 @@ public class CommerceSystem {
     private OrderSystem orderSystem;
     private AdminSystem adminSystem;
 
-    boolean isAdminLocked = false;
-
-    // 💡 5개의 개별 시스템을 거느리는 유일한 매니저
+    // 5개의 개별 시스템을 거느리는 유일한 매니저
     public CommerceSystem(Scanner sc, CategorySystem categorySystem, ProductSystem productSystem,
                           CartSystem cartSystem, OrderSystem orderSystem, AdminSystem adminSystem) {
         this.sc = sc;
@@ -42,7 +40,7 @@ public class CommerceSystem {
                 if (mainOption > 0 && mainOption <= categoryCount) handleShoppingProcess(mainOption - 1);
                 else if (mainOption == 4) handleCartProcess();   // 핸들러 호출
                 else if (mainOption == 5) orderSystem.handleCancelProcess();  // 핸들러 호출
-                else if (mainOption == 6) adminSystem.handleAdminLogin(isAdminLocked);     // 핸들러 호출
+                else if (mainOption == 6) adminSystem.handleAdminLogin();     // 핸들러 호출
                 else if (mainOption == 0) {
                     System.out.println("커머스 플랫폼을 종료합니다.");
                     break;
