@@ -1,4 +1,4 @@
-package Lv2;
+package Lv2.DataBase;
 
 public class Customer {
     private String customerName;

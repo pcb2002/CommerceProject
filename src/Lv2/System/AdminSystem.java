@@ -1,4 +1,8 @@
-package Lv2;
+package Lv2.System;
+
+import Lv2.DB;
+import Lv2.DataBase.Product;
+import Lv2.DataBase.Category;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -6,7 +10,7 @@ import java.util.Scanner;
 
 public class AdminSystem {
     private Scanner sc;
-    private DataBase db;
+    private DB db;
     private List<Category> category;
     private DecimalFormat df = new DecimalFormat("#,###");
 
@@ -15,9 +19,36 @@ public class AdminSystem {
         return category;
     }
 
-    public AdminSystem(Scanner sc, DataBase db) {
+    public AdminSystem(Scanner sc, DB db) {
         this.sc = sc;
         this.db = db;
+    }
+
+    public void handleAdminLogin(boolean isAdminLocked) {
+        if (isAdminLocked) {
+            System.out.println("관리자 모드가 영구적으로 잠겼습니다. 고객센터에 문의하세요.");
+            return;
+        }
+
+        int count = 1;
+        while (count <= 3) {
+            System.out.print("관리자 비밀번호를 입력해주세요: ");
+            String pw = sc.next();
+            sc.nextLine();
+
+            if (correctPassword(pw)) {
+                System.out.println("관리자 인증에 성공했습니다.");
+                showAdminMenu();
+                break;
+            } else {
+                System.out.println("비밀번호가 틀렸습니다. (현재 " + count + "회 틀림 / 최대 3회)");
+                if (count == 3) {
+                    isAdminLocked = true;
+                    System.out.println("비밀번호 3회 오류로 관리자 모드가 차단되었습니다.");
+                }
+                count++;
+            }
+        }
     }
 
     public boolean correctPassword(String pw) {

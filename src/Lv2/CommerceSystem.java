@@ -1,19 +1,29 @@
 package Lv2;
 
+import Lv2.DataBase.Category;
+import Lv2.DataBase.Product;
+import Lv2.System.*;
+
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class CommerceSystem {
     private Scanner sc;
+    private CategorySystem categorySystem;
+    private ProductSystem productSystem;
+    private CartSystem cartSystem;
     private OrderSystem orderSystem;
     private AdminSystem adminSystem;
-    private DataBase db;
 
-    private boolean isAdminLocked = false;
+    boolean isAdminLocked = false;
 
-    public CommerceSystem(Scanner sc, DataBase db, OrderSystem orderSystem, AdminSystem adminSystem) {
+    // 💡 5개의 개별 시스템을 거느리는 유일한 매니저
+    public CommerceSystem(Scanner sc, CategorySystem categorySystem, ProductSystem productSystem,
+                          CartSystem cartSystem, OrderSystem orderSystem, AdminSystem adminSystem) {
         this.sc = sc;
-        this.db = db;
+        this.categorySystem = categorySystem;
+        this.productSystem = productSystem;
+        this.cartSystem = cartSystem;
         this.orderSystem = orderSystem;
         this.adminSystem = adminSystem;
     }
@@ -27,12 +37,12 @@ public class CommerceSystem {
                 int mainOption = sc.nextInt();
                 sc.nextLine();
 
-                int categoryCount = db.getCategories().size();
+                int categoryCount = categorySystem.getAllCategories().size();
 
-                if (mainOption > 0 && mainOption <= categoryCount) orderSystem.handleShopping(mainOption - 1);
-                else if (mainOption == 4) handleOrderProcess();   // 핸들러 호출
-                else if (mainOption == 5) handleCancelProcess();  // 핸들러 호출
-                else if (mainOption == 6) handleAdminLogin();     // 핸들러 호출
+                if (mainOption > 0 && mainOption <= categoryCount) handleShoppingProcess(mainOption - 1);
+                else if (mainOption == 4) handleCartProcess();   // 핸들러 호출
+                else if (mainOption == 5) orderSystem.handleCancelProcess();  // 핸들러 호출
+                else if (mainOption == 6) adminSystem.handleAdminLogin(isAdminLocked);     // 핸들러 호출
                 else if (mainOption == 0) {
                     System.out.println("커머스 플랫폼을 종료합니다.");
                     break;
@@ -51,85 +61,45 @@ public class CommerceSystem {
     private void printMainMenu() {
         System.out.println("\n[ 실시간 커머스 플랫폼 메인 ]");
 
-        for (int i = 0; i < db.getCategories().size(); i++) {
-            Category c = db.getCategories().get(i);
-            System.out.println((i + 1) + ". " + c.getCategoryName());
-        }
+        categorySystem.printAllCategories();
 
         System.out.println("0. 종료           | 프로그램 종료");
         System.out.println("6. 관리자 모드");
 
-        if (!orderSystem.isCartEmpty() || !orderSystem.isOrderHistoryEmpty()) {
+        if (!cartSystem.isCartEmpty() || !orderSystem.isOrderHistoryEmpty()) {
             System.out.println("\n[ 주문 관리 ]");
             System.out.println("4. 장바구니 확인  | 장바구니를 확인 후 주문합니다.");
             System.out.println("5. 주문 취소      | 진행중인 주문을 취소합니다.");
         }
     }
 
+    private void handleShoppingProcess(int categoryIdx) {
+        while(true) {
+            // 1. 카테고리 시스템: 목록 출력 및 선택 전담
+            Category selectedCategory = categorySystem.selectedCategory(categoryIdx);
+            if (selectedCategory == null) break; // 0번(뒤로가기) 입력 시 쇼핑 종료
+
+            // 2. 프로덕트 시스템: 상품 목록 출력, 선택, 구매 확인 전담
+            Product selectedProduct = productSystem.handleProductSelection(selectedCategory);
+            if (selectedProduct == null) break; // 0번(뒤로가기) 및 취소 시 카테고리 선택으로 돌아감
+
+            // 3. 카트 시스템: 선택된 상품을 장바구니에 담기 전담
+            cartSystem.handleAddToCart(selectedProduct);
+        }
+    }
+
     // 3. 주문 처리 핸들러
-    private void handleOrderProcess() {
-        if (orderSystem.isCartEmpty()) {
+    private void handleCartProcess() {
+        if (cartSystem.isCartEmpty()) {
             System.out.println("장바구니가 비어있어 접근할 수 없습니다.");
-            return;
-        }
+        }else {
+            cartSystem.printCart();
 
-        System.out.println("\n[ 장바구니 내역 ]");
-        System.out.print(orderSystem.getCartDetails());
-        System.out.println("\n[ 총 주문 금액 ]\n" + orderSystem.calculateTotalPrice() + "원\n");
-        System.out.println("1. 주문 확정      2. 메인으로 돌아가기");
-
-        int confirmOption = sc.nextInt();
-        sc.nextLine();
-
-        if (confirmOption == 1) {
-            System.out.println(orderSystem.processOrder());
-        }
-    }
-
-    // 4. 주문 취소 핸들러
-    private void handleCancelProcess() {
-        if (orderSystem.isOrderHistoryEmpty()) {
-            System.out.println("취소할 주문이 없습니다.");
-            return;
-        }
-
-        System.out.println("\n[ 최근 주문 내역 ]");
-        System.out.print(orderSystem.getOrderHistoryDetails());
-        System.out.println("\n주문을 취소하시겠습니까?");
-        System.out.println("1. 주문 취소      2. 메인으로 돌아가기");
-
-        int cancelOption = sc.nextInt();
-        sc.nextLine();
-
-        if (cancelOption == 1) {
-            System.out.println(orderSystem.cancelAllOrders());
-        }
-    }
-
-    // 5. 관리자 로그인 핸들러
-    private void handleAdminLogin() {
-        if (isAdminLocked) {
-            System.out.println("관리자 모드가 영구적으로 잠겼습니다. 고객센터에 문의하세요.");
-            return;
-        }
-
-        int count = 1;
-        while (count <= 3) {
-            System.out.print("관리자 비밀번호를 입력해주세요: ");
-            String pw = sc.next();
+            int confirmOption = sc.nextInt();
             sc.nextLine();
 
-            if (adminSystem.correctPassword(pw)) {
-                System.out.println("관리자 인증에 성공했습니다.");
-                adminSystem.showAdminMenu();
-                break;
-            } else {
-                System.out.println("비밀번호가 틀렸습니다. (현재 " + count + "회 틀림 / 최대 3회)");
-                if (count == 3) {
-                    isAdminLocked = true;
-                    System.out.println("비밀번호 3회 오류로 관리자 모드가 차단되었습니다.");
-                }
-                count++;
+            if (confirmOption == 1) {
+                System.out.println(orderSystem.processOrder());
             }
         }
     }
