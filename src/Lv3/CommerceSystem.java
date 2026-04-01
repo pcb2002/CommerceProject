@@ -131,6 +131,9 @@ public class CommerceSystem {
             if (confirmOption == 1) {
                 orderSystem.processOrder(cartSystem.calculateTotalPrice());
             }
+            else if (confirmOption == 2) {
+                cartSystem.deleteItem();
+            }
         }
     }
 }

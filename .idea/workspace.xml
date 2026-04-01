@@ -5,12 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="34ca9a86-5ab7-4743-b91c-61b4fb578d68" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Lv3/CommerceSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Lv3/CommerceSystem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Lv3/DataBase/Customer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Lv3/DataBase/Customer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Lv3/DataBase/CustomerGrade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Lv3/DataBase/CustomerGrade.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Lv3/DB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Lv3/DB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Lv3/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Lv3/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Lv3/System/CartSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Lv3/System/CartSystem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Lv3/System/OrderSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Lv3/System/OrderSystem.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

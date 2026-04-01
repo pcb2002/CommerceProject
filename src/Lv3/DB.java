@@ -66,10 +66,9 @@ public class DB {
         return cartItems;
     }
 
-    public CartItem addCartItem(Product product, int quantity) {
+    public void addCartItem(Product product, int quantity) {
         CartItem newItem = new CartItem(product, quantity);
         cartItems.add(newItem);
-        return newItem;
     }
 
     public void clearCart() {
@@ -81,12 +80,6 @@ public class DB {
     // ==========================================
     public List<OrderItem> getOrderItems() {
         return orderItems;
-    }
-
-    public OrderItem addOrderItem(Product product, int quantity) {
-        OrderItem newItem = new OrderItem(product, quantity);
-        orderItems.add(newItem);
-        return newItem;
     }
 
     public void clearOrder() {

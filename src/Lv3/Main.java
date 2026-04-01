@@ -19,7 +19,7 @@ public class Main {
         DB db = new DB(cartItems, orderItems);
         CategorySystem categorySystem = new CategorySystem(sc, db);
         ProductSystem productSystem = new ProductSystem(sc, db);
-        CartSystem cartSystem = new CartSystem(db);
+        CartSystem cartSystem = new CartSystem(sc, db);
         OrderSystem orderSystem = new OrderSystem(sc, db);
         AdminSystem adminSystem = new AdminSystem(sc, db);
         CommerceSystem commerceSystem = new CommerceSystem(sc, categorySystem, productSystem,cartSystem, orderSystem, adminSystem);
