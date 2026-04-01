@@ -17,8 +17,8 @@ public class Main {
 
         // 시스템 객체 생성 및 의존성 주입 (Dependency Injection)
         DB db = new DB(cartItems, orderItems);
-        CategorySystem categorySystem = new CategorySystem(sc, db);
-        ProductSystem productSystem = new ProductSystem(sc, db);
+        CategorySystem categorySystem = new CategorySystem(db);
+        ProductSystem productSystem = new ProductSystem(sc);
         CartSystem cartSystem = new CartSystem(sc, db);
         OrderSystem orderSystem = new OrderSystem(sc, db);
         AdminSystem adminSystem = new AdminSystem(sc, db);

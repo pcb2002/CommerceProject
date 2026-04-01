@@ -6,7 +6,6 @@ import Lv3.DataBase.Product;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 public class CartSystem {
     private Scanner sc;
@@ -24,7 +23,6 @@ public class CartSystem {
         System.out.println(p.getProductName() + "이(가) 장바구니에 담겼습니다.\n");
     }
 
-    // (기존의 장바구니 조회, 가격 계산 등의 로직은 그대로 유지)
     public boolean isCartEmpty() { return db.getCartItems().isEmpty(); }
 
     public String getCartDetails() {
@@ -52,7 +50,7 @@ public class CartSystem {
         System.out.println("1. 주문 확정     2. 상품 삭제     3. 메인으로 돌아가기");
     }
 
-    public void deleteItem() {
+    public void deleteCartItemProcess() {
         System.out.print("삭제할 상품명을 입력하세요: ");
         String name = sc.nextLine();
 

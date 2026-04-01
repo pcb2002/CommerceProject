@@ -29,7 +29,18 @@ public class CommerceSystem {
     // 1. 메인 루프 (라우팅 전담)
     public void start() {
         while(true){
-            printMainMenu(); // 메뉴 출력 분리
+            System.out.println("\n[ 실시간 커머스 플랫폼 메인 ]");
+
+            categorySystem.printAllCategories();
+
+            System.out.println("0. 종료           | 프로그램 종료");
+            System.out.println("6. 관리자 모드");
+
+            if (!cartSystem.isCartEmpty() || !orderSystem.isOrderHistoryEmpty()) {
+                System.out.println("\n[ 주문 관리 ]");
+                System.out.println("4. 장바구니 확인  | 장바구니를 확인 후 주문합니다.");
+                System.out.println("5. 주문 취소      | 진행중인 주문을 취소합니다.");
+            }
 
             try {
                 int mainOption = sc.nextInt();
@@ -55,28 +66,12 @@ public class CommerceSystem {
         }
     }
 
-    // 2. 메인 메뉴 출력부
-    private void printMainMenu() {
-        System.out.println("\n[ 실시간 커머스 플랫폼 메인 ]");
-
-        categorySystem.printAllCategories();
-
-        System.out.println("0. 종료           | 프로그램 종료");
-        System.out.println("6. 관리자 모드");
-
-        if (!cartSystem.isCartEmpty() || !orderSystem.isOrderHistoryEmpty()) {
-            System.out.println("\n[ 주문 관리 ]");
-            System.out.println("4. 장바구니 확인  | 장바구니를 확인 후 주문합니다.");
-            System.out.println("5. 주문 취소      | 진행중인 주문을 취소합니다.");
-        }
-    }
-
     private void handleShoppingProcess(int categoryIdx) {
         while(true) {
             // 선택된 카테고리 저장
-            productSystem.selectedCategory(categoryIdx);
+            categorySystem.selectedCategory(categoryIdx);
             // 1. 카테고리 시스템: 목록 출력 및 선택 전담
-            Category selectedCategory = categorySystem.selectedCategory(categoryIdx);
+            Category selectedCategory = categorySystem.getC();
             if (selectedCategory == null) break; // 0번(뒤로가기) 입력 시 쇼핑 종료
             categorySystem.printCategorySelection(selectedCategory);
             Product selectedProduct = null;
@@ -87,17 +82,17 @@ public class CommerceSystem {
 
                 if (option == 1) {
                     // 2. 프로덕트 시스템: 상품 목록 출력, 선택, 구매 확인 전담
-                    productSystem.printAllProducts();
+                    categorySystem.printAllCategoryProducts();
                     selectedProduct = productSystem.handleProductSelection(selectedCategory);
                     if (selectedProduct == null) break; // 0번(뒤로가기) 및 취소 시 카테고리 선택으로 돌아감
                 }
                 else if (option == 2) {
-                    Category c = productSystem.downFilter(1000000);
+                    Category c = categorySystem.downFilter(1000000);
                     selectedProduct = productSystem.handleProductSelection(c);
                     if (selectedProduct == null) break;
                 }
                 else if (option == 3) {
-                    Category c = productSystem.upFilter(1000000);
+                    Category c = categorySystem.upFilter(1000000);
                     selectedProduct = productSystem.handleProductSelection(c);
                     if (selectedProduct == null) break;
                 }
@@ -132,7 +127,7 @@ public class CommerceSystem {
                 orderSystem.processOrder(cartSystem.calculateTotalPrice());
             }
             else if (confirmOption == 2) {
-                cartSystem.deleteItem();
+                cartSystem.deleteCartItemProcess();
             }
         }
     }

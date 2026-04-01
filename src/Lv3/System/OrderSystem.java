@@ -7,7 +7,6 @@ import Lv3.DataBase.OrderItem;
 import Lv3.DataBase.Product;
 
 import java.text.DecimalFormat;
-import java.util.List;
 import java.util.Scanner;
 
 public class OrderSystem {
