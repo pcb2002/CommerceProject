@@ -73,14 +73,45 @@ public class CommerceSystem {
 
     private void handleShoppingProcess(int categoryIdx) {
         while(true) {
+            // 선택된 카테고리 저장
+            productSystem.selectedCategory(categoryIdx);
             // 1. 카테고리 시스템: 목록 출력 및 선택 전담
             Category selectedCategory = categorySystem.selectedCategory(categoryIdx);
             if (selectedCategory == null) break; // 0번(뒤로가기) 입력 시 쇼핑 종료
+            categorySystem.printCategorySelection(selectedCategory);
+            Product selectedProduct = null;
+            try {
 
-            // 2. 프로덕트 시스템: 상품 목록 출력, 선택, 구매 확인 전담
-            Product selectedProduct = productSystem.handleProductSelection(selectedCategory);
-            if (selectedProduct == null) break; // 0번(뒤로가기) 및 취소 시 카테고리 선택으로 돌아감
+                int option = sc.nextInt();
+                sc.nextLine();
 
+                if (option == 1) {
+                    // 2. 프로덕트 시스템: 상품 목록 출력, 선택, 구매 확인 전담
+                    productSystem.printAllProducts();
+                    selectedProduct = productSystem.handleProductSelection(selectedCategory);
+                    if (selectedProduct == null) break; // 0번(뒤로가기) 및 취소 시 카테고리 선택으로 돌아감
+                }
+                else if (option == 2) {
+                    Category c = productSystem.downFilter(1000000);
+                    selectedProduct = productSystem.handleProductSelection(c);
+                    if (selectedProduct == null) break;
+                }
+                else if (option == 3) {
+                    Category c = productSystem.upFilter(1000000);
+                    selectedProduct = productSystem.handleProductSelection(c);
+                    if (selectedProduct == null) break;
+                }
+                else if (option == 0) {
+                    System.out.println("커머스 플랫폼을 종료합니다.");
+                    break;
+                }
+                else {
+                    System.out.println("잘못된 번호입니다.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("숫자로만 입력해주세요");
+                sc.nextLine();
+            }
             // 3. 카트 시스템: 선택된 상품을 장바구니에 담기 전담
             cartSystem.handleAddToCart(selectedProduct);
         }

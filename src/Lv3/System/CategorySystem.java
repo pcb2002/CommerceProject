@@ -30,27 +30,13 @@ public class CategorySystem {
         }
     }
 
-    public Category handleCategorySelection() {
-        int size = db.getCategories().size();
-        //printAllCategories();
-        System.out.println("0. 메인으로 돌아가기");
+    public void printCategorySelection(Category selectedCategory) {
+        System.out.println("[ " + selectedCategory.getCategoryName() + " 카테고리 ]");
+        System.out.println("1. 전체 상품 보기");
+        System.out.println("2. 가격대별 필터링 (100만원 이하)");
+        System.out.println("3. 가격대별 필터링 (100만원 초과)");
+        System.out.println("0. 뒤로가기");
 
-        try {
-            System.out.print("카테고리 번호를 입력하세요: ");
-            int choice = sc.nextInt();
-            sc.nextLine();
 
-            if (choice == 0) return null;
-            if (choice > 0 && choice <= size) {
-                return db.getCategories().get(choice - 1); // 선택한 카테고리 리턴
-            } else {
-                System.out.println("잘못된 번호입니다.");
-                return null;
-            }
-        } catch (InputMismatchException e) {
-            System.out.println("숫자로만 입력해주세요");
-            sc.nextLine();
-            return null;
-        }
     }
 }
