@@ -45,6 +45,5 @@ public class CartSystem {
         System.out.print(getCartDetails());
         System.out.println("\n[ 총 주문 금액 ]\n" + df.format(calculateTotalPrice()) + "원\n");
         System.out.println("1. 주문 확정      2. 메인으로 돌아가기");
-
     }
 }

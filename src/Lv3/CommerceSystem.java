@@ -123,12 +123,13 @@ public class CommerceSystem {
             System.out.println("장바구니가 비어있어 접근할 수 없습니다.");
         }else {
             cartSystem.printCart();
+            cartSystem.calculateTotalPrice();
 
             int confirmOption = sc.nextInt();
             sc.nextLine();
 
             if (confirmOption == 1) {
-                System.out.println(orderSystem.processOrder());
+                orderSystem.processOrder(cartSystem.calculateTotalPrice());
             }
         }
     }
